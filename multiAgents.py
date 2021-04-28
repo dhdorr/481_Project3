@@ -72,33 +72,38 @@ class ReflexAgent(Agent):
         newFood = successorGameState.getFood()
         newGhostStates = successorGameState.getGhostStates()
         newScaredTimes = [ghostState.scaredTimer for ghostState in newGhostStates]
-        print("Scared Times: ", newScaredTimes)
+        #print("Scared Times: ", newScaredTimes)
+        #print("Pacman Pos: ", newPos)
         #print("New Foods: ", newFood)
 
         "*** YOUR CODE HERE ***"
         foodPos = newFood.asList()
         foodCount = len(foodPos)
-        nearestDist = 9999999
+        nearestDist = 1000000
+        score = 0
+
         for i in range(foodCount):
-            distance = manhattanDistance(foodPos[i], newPos) + foodCount * 99
+            distance = manhattanDistance(foodPos[i], newPos) + foodCount * 100
+            print("Distance: ", foodCount)
             if distance < nearestDist:
                 nearestDist = distance
-                nearestFood = foodPos
+                #nearestFood = foodPos
 
         if foodCount == 0:
             nearestDist = 0
-        score = -nearestDist
 
-        for i in range(len(newGhostStates)):
-            ghostPos = successorGameState.getGhostPosition(i+1)
-            if manhattanDistance(newPos, ghostPos) <= 1 and newScaredTimes[i] <= 1:
-                score -= 9999999
-            elif manhattanDistance(newPos, ghostPos) <= 2 and newScaredTimes[i] > 1:
-                score = 9999999
+        score -= nearestDist
 
-        return score
+        for i in range(len(newGhostStates)):    # For however many ghosts there are do this...
+            ghostPos = successorGameState.getGhostPosition(i + 1)
+            print("Ghost Dist: ", manhattanDistance(newPos, ghostPos))
+            if manhattanDistance(newPos, ghostPos) <= 1 and newScaredTimes[i] == 0:
+                score -= 1000000
+            elif manhattanDistance(newPos, ghostPos) <= 10 and newScaredTimes[i] > 0:
+                score += 1000000
+        #print("Score: ", score)
+        return score    # successorGameState.getScore()
 
-        #return successorGameState.getScore()
 
 def scoreEvaluationFunction(currentGameState):
     """
