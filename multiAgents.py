@@ -78,21 +78,22 @@ class ReflexAgent(Agent):
         #print("New Foods: ", newFood)
 
         "*** YOUR CODE HERE ***"
-        foodPos = newFood.asList()
-        foodCount = len(foodPos)
-        nearestDist = 1000000
+        foodList = newFood.asList()
+        foodCount = len(foodList)
+        shortestDist = 1000000
+        score = -shortestDist
 
         for i in range(foodCount):
-            distance = manhattanDistance(foodPos[i], newPos) + foodCount * 100
-            #print("Distance: ", distance)
-            if distance < nearestDist:
-                nearestDist = distance
+            distance = manhattanDistance(foodList[i], newPos) + foodCount * 100
+            if distance < shortestDist:
+                shortestDist = distance
+            if manhattanDistance(currentGameState.getPacmanPosition(), foodList[i]) < manhattanDistance(newPos, foodList[i]):
+                score -= 1000000 + foodCount * 100
 
         if foodCount == 0:
-            nearestDist = 0
+            shortestDist = 0
 
-        score = -nearestDist
-
+        score = -shortestDist
 
         for i in range(len(newGhostStates)):    # For however many ghosts there are do this...
             ghostPos = successorGameState.getGhostPosition(i + 1)
