@@ -68,6 +68,7 @@ class ReflexAgent(Agent):
         """
         # Useful information you can extract from a GameState (pacman.py)
         successorGameState = currentGameState.generatePacmanSuccessor(action)
+        #print("Successor State: ", successorGameState)
         newPos = successorGameState.getPacmanPosition()
         newFood = successorGameState.getFood()
         newGhostStates = successorGameState.getGhostStates()
@@ -80,29 +81,27 @@ class ReflexAgent(Agent):
         foodPos = newFood.asList()
         foodCount = len(foodPos)
         nearestDist = 1000000
-        score = 0
 
         for i in range(foodCount):
             distance = manhattanDistance(foodPos[i], newPos) + foodCount * 100
-            print("Distance: ", foodCount)
+            #print("Distance: ", distance)
             if distance < nearestDist:
                 nearestDist = distance
-                #nearestFood = foodPos
 
         if foodCount == 0:
             nearestDist = 0
 
-        score -= nearestDist
+        score = -nearestDist
+
 
         for i in range(len(newGhostStates)):    # For however many ghosts there are do this...
             ghostPos = successorGameState.getGhostPosition(i + 1)
-            print("Ghost Dist: ", manhattanDistance(newPos, ghostPos))
             if manhattanDistance(newPos, ghostPos) <= 1 and newScaredTimes[i] == 0:
-                score -= 1000000
-            elif manhattanDistance(newPos, ghostPos) <= 10 and newScaredTimes[i] > 0:
-                score += 1000000
-        #print("Score: ", score)
+                score -= 1000000 + i
+            elif manhattanDistance(newPos, ghostPos) <= 1 and newScaredTimes[i] > 0:
+                score += 1000000 + i
         return score    # successorGameState.getScore()
+        #return successorGameState.getScore()
 
 
 def scoreEvaluationFunction(currentGameState):
